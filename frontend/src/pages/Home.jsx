@@ -1,11 +1,18 @@
+import Calendar from './Calendar'
+
 function Home({ user, onLogout }) {
   return (
     <div>
-      <h1>Welcome, {user.name || user.email}</h1>
-      <p>{user.email}</p>
-      <button type="button" onClick={onLogout}>
-        Log out
-      </button>
+      <header className="home-header">
+        <div>
+          <h1>Custody calendar</h1>
+          <p className="home-user">{user.name || user.email}</p>
+        </div>
+        <button type="button" onClick={onLogout}>
+          Log out
+        </button>
+      </header>
+      <Calendar />
     </div>
   )
 }
