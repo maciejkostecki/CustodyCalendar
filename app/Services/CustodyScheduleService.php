@@ -15,7 +15,7 @@ class CustodyScheduleService
     /**
      * Determine the custodial parent role ('father' | 'mother') for a date.
      *
-     * Mon/Tue = father, Wed/Thu = mother. Fri/Sat/Sun form a weekend block that
+     * Mon/Tue = mother, Wed/Thu = father. Fri/Sat/Sun form a weekend block that
      * alternates every week, anchored so the anchor week's weekend = father.
      */
     public function custodialParentFor(CarbonInterface $date): string
@@ -23,8 +23,8 @@ class CustodyScheduleService
         $dayOfWeek = $date->dayOfWeekIso; // 1 (Mon) .. 7 (Sun)
 
         return match (true) {
-            $dayOfWeek <= 2 => 'father',                 // Mon, Tue
-            $dayOfWeek <= 4 => 'mother',                 // Wed, Thu
+            $dayOfWeek <= 2 => 'mother',                 // Mon, Tue
+            $dayOfWeek <= 4 => 'father',                 // Wed, Thu
             default => $this->weekendParent($date), // Fri, Sat, Sun
         };
     }
@@ -34,12 +34,15 @@ class CustodyScheduleService
      */
     private function weekendParent(CarbonInterface $date): string
     {
-        $anchorFriday = Carbon::parse(config('custody.anchor_date'))->startOfDay();
-
         // The Friday of the date's own week owns its Sat/Sun.
         $friday = $date->dayOfWeekIso === CarbonInterface::FRIDAY
             ? $date->copy()->startOfDay()
             : $date->copy()->startOfDay()->previous(CarbonInterface::FRIDAY);
+
+        // Compare as plain calendar dates so timezone offsets can't drift the
+        // weekly parity across a 7-day boundary.
+        $anchorFriday = Carbon::parse(config('custody.anchor_date'));
+        $friday = Carbon::parse($friday->toDateString());
 
         $weeks = (int) floor($anchorFriday->diffInDays($friday, false) / 7);
 
@@ -53,7 +56,7 @@ class CustodyScheduleService
      */
     public function threeWeekSchedule(?CarbonInterface $today = null): array
     {
-        $today = ($today ? $today->copy() : Carbon::now())->startOfDay();
+        $today = ($today ? $today->copy() : Carbon::now(config('custody.timezone')))->startOfDay();
         $start = $today->copy()->startOfWeek(CarbonInterface::MONDAY);
         $parents = config('custody.parents');
 

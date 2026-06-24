@@ -1,3 +1,12 @@
+.home {
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  text-align: left;
+}
+
 .home-header {
   display: flex;
   align-items: center;
@@ -8,6 +17,8 @@
 
 .home-header h1 {
   margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: normal;
 }
 
 .home-user {
@@ -20,6 +31,27 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.calendar-range {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.calendar-weekdays span {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+  text-align: center;
 }
 
 .calendar-week {
@@ -46,18 +78,19 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-}
-
-.day-weekday {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.7;
+  gap: 4px;
 }
 
 .day-number {
   font-size: 1.1rem;
   font-weight: 600;
+}
+
+.day-month {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.65;
 }
 
 .day-parent {
@@ -66,16 +99,22 @@
   color: var(--parent-color);
 }
 
-/* Today: stronger outline so it stands out from every other day. */
+/* Today: white outline ringed by the parent color so it clearly stands apart. */
 .day-cell.today {
-  border-color: var(--parent-color);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--parent-color) 40%, transparent);
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--parent-color);
 }
 
-/* Past days in the current week: dimmed and non-interactive. */
+/* Past days: greyed out, faded, and non-interactive. */
 .day-cell.past {
-  opacity: 0.4;
+  --parent-color: #9ca3af;
+  opacity: 0.55;
+  filter: grayscale(0.5);
   pointer-events: none;
+}
+
+.day-cell.past .day-parent {
+  font-weight: 500;
 }
 
 @media (max-width: 640px) {

@@ -2,7 +2,7 @@ import Calendar from './Calendar'
 
 function Home({ user, onLogout }) {
   return (
-    <div>
+    <div className="home">
       <header className="home-header">
         <div>
           <h1>Custody calendar</h1>

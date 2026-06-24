@@ -44,7 +44,7 @@ class CalendarControllerTest extends TestCase
 
         $today = collect($days)->firstWhere('date', '2026-06-25');
         $this->assertTrue($today['isToday']);
-        $this->assertSame('mother', $today['parent']); // Thursday = mother
+        $this->assertSame('father', $today['parent']); // Thursday = father
 
         $anchorFri = collect($days)->firstWhere('date', '2026-06-26');
         $this->assertSame('father', $anchorFri['parent']); // anchor weekend = father

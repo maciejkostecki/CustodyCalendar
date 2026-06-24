@@ -11,6 +11,7 @@ export default defineConfig({
       '/auth': 'http://localhost',
       '/me': 'http://localhost',
       '/logout': 'http://localhost',
+      '/calendar': 'http://localhost',
     }
   }
 })

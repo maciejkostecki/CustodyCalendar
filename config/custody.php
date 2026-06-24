@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Timezone
+    |--------------------------------------------------------------------------
+    |
+    | "Today" and the current-week boundary are resolved in this timezone so
+    | the calendar matches the parents' local day rather than the server's UTC.
+    |
+    */
+
+    'timezone' => env('CUSTODY_TIMEZONE', 'Europe/Warsaw'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Parents
     |--------------------------------------------------------------------------
     |

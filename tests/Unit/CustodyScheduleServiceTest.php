@@ -17,6 +17,7 @@ class CustodyScheduleServiceTest extends TestCase
         $this->service = new CustodyScheduleService;
 
         config()->set('custody.anchor_date', '2026-06-26');
+        config()->set('custody.timezone', 'Europe/Warsaw');
         config()->set('custody.parents', [
             'father' => ['label' => 'Father', 'color' => '#2563eb'],
             'mother' => ['label' => 'Mother', 'color' => '#db2777'],
@@ -26,10 +27,10 @@ class CustodyScheduleServiceTest extends TestCase
     public function test_weekdays_have_fixed_parents(): void
     {
         // Week of Mon 2026-06-22.
-        $this->assertSame('father', $this->service->custodialParentFor(Carbon::parse('2026-06-22'))); // Mon
-        $this->assertSame('father', $this->service->custodialParentFor(Carbon::parse('2026-06-23'))); // Tue
-        $this->assertSame('mother', $this->service->custodialParentFor(Carbon::parse('2026-06-24'))); // Wed
-        $this->assertSame('mother', $this->service->custodialParentFor(Carbon::parse('2026-06-25'))); // Thu
+        $this->assertSame('mother', $this->service->custodialParentFor(Carbon::parse('2026-06-22'))); // Mon
+        $this->assertSame('mother', $this->service->custodialParentFor(Carbon::parse('2026-06-23'))); // Tue
+        $this->assertSame('father', $this->service->custodialParentFor(Carbon::parse('2026-06-24'))); // Wed
+        $this->assertSame('father', $this->service->custodialParentFor(Carbon::parse('2026-06-25'))); // Thu
     }
 
     public function test_anchor_weekend_is_father(): void
@@ -55,6 +56,20 @@ class CustodyScheduleServiceTest extends TestCase
     {
         // One week before the anchor weekend → mother.
         $this->assertSame('mother', $this->service->custodialParentFor(Carbon::parse('2026-06-19'))); // Fri
+    }
+
+    public function test_weekend_parity_is_timezone_stable(): void
+    {
+        // A Warsaw-local midnight is 22:00 the previous day in UTC; the parity
+        // must still match the plain calendar date and not drift a week.
+        $this->assertSame(
+            'father',
+            $this->service->custodialParentFor(Carbon::parse('2026-07-10', 'Europe/Warsaw')) // Fri, 2 weeks after anchor
+        );
+        $this->assertSame(
+            'mother',
+            $this->service->custodialParentFor(Carbon::parse('2026-07-17', 'Europe/Warsaw')) // Fri, 3 weeks after anchor
+        );
     }
 
     public function test_window_is_21_days_starting_monday(): void
