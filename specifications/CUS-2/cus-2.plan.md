@@ -8,21 +8,21 @@ The logout capability is already fully implemented as part of CUS-1. The only de
 
 | Acceptance Criterion | Status | Source |
 |---|---|---|
-| A "Log out" option is visible in the UI when logged in | Needs label fix | `frontend/src/pages/Home.jsx:7` — currently "Sign out" |
-| Clicking "Log out" ends the session and redirects to the login screen | Already satisfied | Existing logout handler from CUS-1 |
-| Accessing any protected page after logout redirects to the login screen | Already satisfied | Existing protected-route guard from CUS-1 |
+| A "Log out" option is visible in the UI when logged in | Satisfied | `frontend/src/pages/Home.jsx:7` — renders "Log out" |
+| Clicking "Log out" ends the session and redirects to the login screen | Satisfied | `App.jsx:25-33` handleLogout + `routes/web.php:15` POST /logout |
+| Accessing any protected page after logout redirects to the login screen | Satisfied | `App.jsx:42-50` route guard from CUS-1 |
 
 ## Implementation Plan
 
 ### Phase 1 — Correct the logout button label
 
-- [ ] **Task 1: `[MODIFY] frontend/src/pages/Home.jsx` — change button label from "Sign out" to "Log out"**
+- [x] **Task 1: `[MODIFY] frontend/src/pages/Home.jsx` — change button label from "Sign out" to "Log out"**
 
   **Definition of Done:**
-  - [ ] Button in `Home.jsx` renders the text `Log out`
-  - [ ] No occurrences of `Sign out` remain in `Home.jsx`
-  - [ ] `onClick` handler and all other button attributes are unchanged
-  - [ ] No new files, routes, components, or imports added
+  - [x] Button in `Home.jsx` renders the text `Log out`
+  - [x] No occurrences of `Sign out` remain in `Home.jsx`
+  - [x] `onClick` handler and all other button attributes are unchanged
+  - [x] No new files, routes, components, or imports added
 
 ## Test Plan
 
@@ -37,3 +37,4 @@ None. Text-label change only.
 | Date | Change |
 |---|---|
 | 2026-06-22 | Initial plan created |
+| 2026-06-24 | Verified all acceptance criteria already satisfied in the committed code; button label already reads "Log out" (no code change needed). Marked tasks complete. |
