@@ -146,9 +146,10 @@
   letter-spacing: 0.04em;
   padding: 1px 5px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--parent-color) 18%, transparent);
-  color: var(--parent-color);
-  border: 1px solid var(--parent-color);
+  /* Pending shows the parent the day would flip TO (opposite of current). */
+  background: color-mix(in srgb, var(--pending-color) 18%, transparent);
+  color: var(--pending-color);
+  border: 1px solid var(--pending-color);
 }
 
 /* Mobile: compact 7-column grid — date number + parent initial (F/M),
@@ -225,7 +226,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--parent-color);
+    background: var(--pending-color);
   }
 
   .day-cell {

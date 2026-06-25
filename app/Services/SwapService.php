@@ -57,13 +57,12 @@ class SwapService
 
         $approvedByDate = $requests->where('status', SwapRequest::STATUS_APPROVED)
             ->keyBy(fn (SwapRequest $r) => $r->date->toDateString());
-        $pendingDates = $requests->where('status', SwapRequest::STATUS_PENDING)
-            ->map(fn (SwapRequest $r) => $r->date->toDateString())
-            ->flip();
+        $pendingByDate = $requests->where('status', SwapRequest::STATUS_PENDING)
+            ->keyBy(fn (SwapRequest $r) => $r->date->toDateString());
 
         $parents = config('custody.parents');
 
-        return array_map(function (array $day) use ($approvedByDate, $pendingDates, $parents) {
+        return array_map(function (array $day) use ($approvedByDate, $pendingByDate, $parents) {
             if ($approvedByDate->has($day['date'])) {
                 $role = $approvedByDate[$day['date']]->to_role;
                 $day['parent'] = $role;
@@ -71,7 +70,11 @@ class SwapService
                 $day['color'] = $parents[$role]['color'];
             }
 
-            $day['pending'] = $pendingDates->has($day['date']);
+            $pending = $pendingByDate->get($day['date']);
+            $day['pending'] = $pending !== null;
+            // The pending marker shows the parent the day would flip TO, so it
+            // reads as the opposite of the current custodial colour.
+            $day['pending_color'] = $pending ? $parents[$pending->to_role]['color'] : null;
 
             return $day;
         }, $days);

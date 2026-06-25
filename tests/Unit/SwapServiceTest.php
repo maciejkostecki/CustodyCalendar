@@ -110,9 +110,12 @@ class SwapServiceTest extends TestCase
         $this->assertSame('Father', $result[0]['label']);
         $this->assertFalse($result[0]['pending']);
 
-        // Pending request only flags the day.
+        // Pending request only flags the day; its marker colour is the
+        // proposed (to_role) parent, opposite the current custodial colour.
         $this->assertSame('mother', $result[1]['parent']);
         $this->assertTrue($result[1]['pending']);
+        $this->assertSame('#2563eb', $result[1]['pending_color']); // to_role = father
+        $this->assertNull($result[0]['pending_color']); // approved, not pending
     }
 
     public function test_approve_sets_status_comment_and_frees_active_date(): void

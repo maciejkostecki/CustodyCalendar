@@ -58,7 +58,7 @@ function DayCell({ day, onSelect }) {
   return (
     <div
       className={classes.join(' ')}
-      style={{ '--parent-color': day.color }}
+      style={{ '--parent-color': day.color, '--pending-color': day.pending_color || day.color }}
       aria-current={day.isToday ? 'date' : undefined}
       {...interactiveProps}
     >
