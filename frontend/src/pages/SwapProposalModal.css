@@ -1,0 +1,95 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.modal {
+  background: var(--bg, #fff);
+  color: inherit;
+  width: 100%;
+  max-width: 26rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border, #e5e4e7);
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.modal h2 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+
+.modal-details {
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modal-details dt {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+.modal-details dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.modal-field textarea {
+  font: inherit;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border, #e5e4e7);
+  background: transparent;
+  color: inherit;
+  resize: vertical;
+}
+
+.modal-notice {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(180, 130, 0, 0.12);
+}
+
+.modal-error {
+  margin: 0 0 1rem;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.modal-actions .primary {
+  background: var(--accent, #2563eb);
+  color: #fff;
+  border-color: transparent;
+}

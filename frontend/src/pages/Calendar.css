@@ -117,6 +117,34 @@
   font-weight: 500;
 }
 
+/* Future days are clickable to propose a swap. */
+.day-cell.selectable {
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.day-cell.selectable:hover {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--parent-color) 45%, transparent);
+}
+
+.day-cell.selectable:focus-visible {
+  outline: 2px solid var(--parent-color);
+  outline-offset: 2px;
+}
+
+/* Pending swap marker. */
+.day-pending {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--parent-color) 18%, transparent);
+  color: var(--parent-color);
+  border: 1px solid var(--parent-color);
+}
+
 @media (max-width: 640px) {
   .calendar-week {
     grid-template-columns: repeat(7, 1fr);

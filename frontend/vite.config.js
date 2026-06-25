@@ -12,6 +12,7 @@ export default defineConfig({
       '/me': 'http://localhost',
       '/logout': 'http://localhost',
       '/calendar': 'http://localhost',
+      '/swap-requests': 'http://localhost',
     }
   }
 })
