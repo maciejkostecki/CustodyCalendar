@@ -67,9 +67,15 @@ function DayCell({ day, onSelect }) {
           {dayNumber}
           {showMonth && <span className="day-month"> {MONTHS[month - 1]}</span>}
         </span>
-        {day.pending && <span className="day-pending" title="Swap pending">Pending</span>}
+        {day.pending && (
+          <>
+            <span className="day-pending" title="Swap pending">Pending</span>
+            <span className="day-pending-dot" title="Swap pending" aria-label="Swap pending" />
+          </>
+        )}
       </div>
       <span className="day-parent">{day.label}</span>
+      <span className="day-parent-short" aria-hidden="true">{day.label[0]}</span>
     </div>
   )
 }

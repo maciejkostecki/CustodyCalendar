@@ -99,6 +99,12 @@
   color: var(--parent-color);
 }
 
+/* Compact parent initial + pending dot are mobile-only; hidden on desktop. */
+.day-parent-short,
+.day-pending-dot {
+  display: none;
+}
+
 /* Today: white outline ringed by the parent color so it clearly stands apart. */
 .day-cell.today {
   border-color: #fff;
@@ -145,18 +151,84 @@
   border: 1px solid var(--parent-color);
 }
 
+/* Mobile: compact 7-column grid — date number + parent initial (F/M),
+   pending shown as a dot. Full labels and the "Pending" tag are hidden. */
 @media (max-width: 640px) {
+  .home {
+    padding: 1rem 0.75rem;
+  }
+
+  .home-header {
+    gap: 0.5rem;
+  }
+
+  .home-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .calendar,
   .calendar-week {
-    grid-template-columns: repeat(7, 1fr);
     gap: 0.25rem;
   }
 
+  .calendar-weekdays {
+    gap: 0.25rem;
+  }
+
+  .calendar-weekdays span {
+    font-size: 0.6rem;
+  }
+
   .day-cell {
-    min-height: 4rem;
-    padding: 0.35rem;
+    min-height: 3rem;
+    padding: 0.25rem;
+    border-left-width: 4px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.1rem;
+  }
+
+  .day-head {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .day-number {
+    font-size: 0.85rem;
+  }
+
+  .day-month {
+    display: none;
   }
 
   .day-parent {
-    font-size: 0.7rem;
+    display: none;
+  }
+
+  .day-parent-short {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--parent-color);
+    line-height: 1;
+  }
+
+  .day-pending {
+    display: none;
+  }
+
+  .day-pending-dot {
+    display: block;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--parent-color);
+  }
+
+  .day-cell {
+    position: relative;
   }
 }
