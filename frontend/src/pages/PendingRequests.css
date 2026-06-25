@@ -82,3 +82,49 @@
   font-size: 0.75rem;
   opacity: 0.6;
 }
+
+.pending-approve {
+  margin-top: 0.5rem;
+}
+
+.pending-approve textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--border, #e5e4e7);
+  background: transparent;
+  color: inherit;
+  resize: vertical;
+}
+
+.pending-error {
+  margin: 0.35rem 0 0;
+  color: #dc2626;
+  font-size: 0.8rem;
+}
+
+.pending-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.pending-actions .primary {
+  background: var(--parent-color, #2563eb);
+  color: #fff;
+  border-color: transparent;
+}
+
+@media (max-width: 640px) {
+  .pending-actions {
+    flex-direction: column-reverse;
+  }
+
+  .pending-actions button {
+    width: 100%;
+  }
+}

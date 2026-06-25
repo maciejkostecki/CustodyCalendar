@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Exceptions\DuplicatePendingRequestException;
+use App\Exceptions\NotTheReceivingParentException;
 use App\Exceptions\PastDateNotAllowedException;
+use App\Exceptions\RequestNotPendingException;
 use App\Models\SwapRequest;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -108,5 +110,30 @@ class SwapService
             'status' => SwapRequest::STATUS_PENDING,
             'comment' => $comment,
         ]);
+    }
+
+    /**
+     * Approve a pending request on behalf of the receiving (deciding) parent.
+     *
+     * @throws RequestNotPendingException
+     * @throws NotTheReceivingParentException
+     */
+    public function approve(SwapRequest $request, string $deciderRole, ?string $comment): SwapRequest
+    {
+        if ($request->status !== SwapRequest::STATUS_PENDING) {
+            throw new RequestNotPendingException;
+        }
+
+        // Only the parent who received the proposal may decide on it.
+        if ($deciderRole === $request->requested_by_role) {
+            throw new NotTheReceivingParentException;
+        }
+
+        $request->update([
+            'status' => SwapRequest::STATUS_APPROVED,
+            'decision_comment' => $comment,
+        ]);
+
+        return $request;
     }
 }

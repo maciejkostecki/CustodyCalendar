@@ -85,4 +85,35 @@ class SwapRequestController extends Controller
 
         return response()->json($swap, 201);
     }
+
+    public function approve(Request $request, SwapRequest $swapRequest, ParentResolver $parents, SwapService $swaps)
+    {
+        if (! Session::has('user')) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $role = $parents->roleForEmail(Session::get('user')['email'] ?? '');
+        if ($role === null) {
+            return response()->json(['error' => 'Your account is not a recognised parent.'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'comment' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $swap = $swaps->approve($swapRequest, $role, $validator->validated()['comment'] ?? null);
+        } catch (SwapProposalException $e) {
+            return response()->json(['error' => $e->getMessage()], $e->status());
+        }
+
+        return response()->json($swap);
+    }
 }

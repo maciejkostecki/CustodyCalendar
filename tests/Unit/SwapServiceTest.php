@@ -3,7 +3,9 @@
 namespace Tests\Unit;
 
 use App\Exceptions\DuplicatePendingRequestException;
+use App\Exceptions\NotTheReceivingParentException;
 use App\Exceptions\PastDateNotAllowedException;
+use App\Exceptions\RequestNotPendingException;
 use App\Models\SwapRequest;
 use App\Services\SwapService;
 use Carbon\Carbon;
@@ -111,5 +113,34 @@ class SwapServiceTest extends TestCase
         // Pending request only flags the day.
         $this->assertSame('mother', $result[1]['parent']);
         $this->assertTrue($result[1]['pending']);
+    }
+
+    public function test_approve_sets_status_comment_and_frees_active_date(): void
+    {
+        $request = $this->service->propose('mother', Carbon::parse('2026-06-29'), null);
+        $this->assertSame('2026-06-29', $request->active_date->toDateString());
+
+        $approved = $this->service->approve($request, 'father', 'ok by me');
+
+        $this->assertSame(SwapRequest::STATUS_APPROVED, $approved->status);
+        $this->assertSame('ok by me', $approved->decision_comment);
+        $this->assertNull($approved->fresh()->active_date); // freed for the unique-pending constraint
+    }
+
+    public function test_approve_rejects_non_pending(): void
+    {
+        $request = $this->service->propose('mother', Carbon::parse('2026-06-29'), null);
+        $this->service->approve($request, 'father', null);
+
+        $this->expectException(RequestNotPendingException::class);
+        $this->service->approve($request, 'father', null);
+    }
+
+    public function test_approve_rejects_when_decider_is_requester(): void
+    {
+        $request = $this->service->propose('mother', Carbon::parse('2026-06-29'), null);
+
+        $this->expectException(NotTheReceivingParentException::class);
+        $this->service->approve($request, 'mother', null);
     }
 }

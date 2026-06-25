@@ -80,7 +80,7 @@ function DayCell({ day, onSelect }) {
   )
 }
 
-function Calendar() {
+function Calendar({ refreshSignal }) {
   const [days, setDays] = useState(null)
   const [error, setError] = useState(null)
   const [selectedDay, setSelectedDay] = useState(null)
@@ -91,9 +91,10 @@ function Calendar() {
       .catch(() => setError('Could not load the calendar. Please try again.'))
   }, [])
 
+  // Reload when a swap decision elsewhere bumps the refresh signal.
   useEffect(() => {
     load()
-  }, [load])
+  }, [load, refreshSignal])
 
   const handleSubmitted = async () => {
     setSelectedDay(null)

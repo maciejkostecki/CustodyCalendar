@@ -18,3 +18,4 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/calendar', [CalendarController::class, 'index']);
 Route::get('/swap-requests', [SwapRequestController::class, 'index']);
 Route::post('/swap-requests', [SwapRequestController::class, 'store']);
+Route::post('/swap-requests/{swapRequest}/approve', [SwapRequestController::class, 'approve']);

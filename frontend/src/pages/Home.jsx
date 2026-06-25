@@ -1,7 +1,12 @@
+import { useState } from 'react'
 import Calendar from './Calendar'
 import PendingRequests from './PendingRequests'
 
 function Home({ user, onLogout }) {
+  // Bumped when a swap decision is made, so the calendar refetches the
+  // effective schedule (the two are sibling components).
+  const [version, setVersion] = useState(0)
+
   return (
     <div className="home">
       <header className="home-header">
@@ -13,8 +18,8 @@ function Home({ user, onLogout }) {
           Log out
         </button>
       </header>
-      <PendingRequests />
-      <Calendar />
+      <PendingRequests onDecision={() => setVersion((v) => v + 1)} />
+      <Calendar refreshSignal={version} />
     </div>
   )
 }

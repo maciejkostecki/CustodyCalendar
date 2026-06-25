@@ -22,6 +22,7 @@ class SwapRequest extends Model
         'to_role',
         'status',
         'comment',
+        'decision_comment',
     ];
 
     protected $casts = [
