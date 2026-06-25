@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getIncomingSwapRequests, approveSwapRequest } from '../api/swaps'
+import { getIncomingSwapRequests, approveSwapRequest, rejectSwapRequest } from '../api/swaps'
 import './PendingRequests.css'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -19,18 +19,22 @@ function formatSubmitted(iso) {
   })
 }
 
-function RequestItem({ req, onApproved }) {
-  const [open, setOpen] = useState(false)
+function RequestItem({ req, onDecided }) {
+  const [action, setAction] = useState(null) // null | 'approve' | 'reject'
   const [comment, setComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
-  const approve = async () => {
+  const confirm = async () => {
     setSubmitting(true)
     setError(null)
     try {
-      await approveSwapRequest(req.id, comment)
-      onApproved()
+      if (action === 'approve') {
+        await approveSwapRequest(req.id, comment)
+      } else {
+        await rejectSwapRequest(req.id, comment)
+      }
+      onDecided()
     } catch (err) {
       setError(err.message)
       setSubmitting(false)
@@ -48,8 +52,8 @@ function RequestItem({ req, onApproved }) {
         Requested by {req.requested_by_label} · {formatSubmitted(req.created_at)}
       </p>
 
-      {open ? (
-        <div className="pending-approve">
+      {action ? (
+        <div className="pending-decide">
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -59,17 +63,27 @@ function RequestItem({ req, onApproved }) {
           />
           {error && <p className="pending-error" role="alert">{error}</p>}
           <div className="pending-actions">
-            <button type="button" onClick={() => setOpen(false)} disabled={submitting}>
+            <button type="button" onClick={() => setAction(null)} disabled={submitting}>
               Cancel
             </button>
-            <button type="button" className="primary" onClick={approve} disabled={submitting}>
-              {submitting ? 'Approving…' : 'Confirm approval'}
+            <button
+              type="button"
+              className={action === 'approve' ? 'primary' : 'danger'}
+              onClick={confirm}
+              disabled={submitting}
+            >
+              {submitting
+                ? action === 'approve' ? 'Approving…' : 'Rejecting…'
+                : action === 'approve' ? 'Confirm approval' : 'Confirm rejection'}
             </button>
           </div>
         </div>
       ) : (
         <div className="pending-actions">
-          <button type="button" className="primary" onClick={() => setOpen(true)}>
+          <button type="button" className="danger" onClick={() => setAction('reject')}>
+            Reject
+          </button>
+          <button type="button" className="primary" onClick={() => setAction('approve')}>
             Approve
           </button>
         </div>
@@ -91,7 +105,7 @@ function PendingRequests({ onDecision }) {
     load()
   }, [])
 
-  const handleApproved = async () => {
+  const handleDecided = async () => {
     await load()
     if (onDecision) onDecision()
   }
@@ -113,7 +127,7 @@ function PendingRequests({ onDecision }) {
       ) : (
         <ul className="pending-list">
           {requests.map((req) => (
-            <RequestItem key={req.id} req={req} onApproved={handleApproved} />
+            <RequestItem key={req.id} req={req} onDecided={handleDecided} />
           ))}
         </ul>
       )}

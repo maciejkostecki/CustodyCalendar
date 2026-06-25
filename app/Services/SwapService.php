@@ -123,6 +123,25 @@ class SwapService
      */
     public function approve(SwapRequest $request, string $deciderRole, ?string $comment): SwapRequest
     {
+        return $this->decide($request, $deciderRole, $comment, SwapRequest::STATUS_APPROVED);
+    }
+
+    /**
+     * Reject a pending request on behalf of the receiving (deciding) parent.
+     *
+     * @throws RequestNotPendingException
+     * @throws NotTheReceivingParentException
+     */
+    public function reject(SwapRequest $request, string $deciderRole, ?string $comment): SwapRequest
+    {
+        return $this->decide($request, $deciderRole, $comment, SwapRequest::STATUS_REJECTED);
+    }
+
+    /**
+     * Shared transition: only the receiving parent may decide a pending request.
+     */
+    private function decide(SwapRequest $request, string $deciderRole, ?string $comment, string $status): SwapRequest
+    {
         if ($request->status !== SwapRequest::STATUS_PENDING) {
             throw new RequestNotPendingException;
         }
@@ -133,7 +152,7 @@ class SwapService
         }
 
         $request->update([
-            'status' => SwapRequest::STATUS_APPROVED,
+            'status' => $status,
             'decision_comment' => $comment,
         ]);
 

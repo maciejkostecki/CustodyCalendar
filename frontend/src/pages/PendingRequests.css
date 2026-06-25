@@ -83,11 +83,11 @@
   opacity: 0.6;
 }
 
-.pending-approve {
+.pending-decide {
   margin-top: 0.5rem;
 }
 
-.pending-approve textarea {
+.pending-decide textarea {
   width: 100%;
   box-sizing: border-box;
   font: inherit;
@@ -117,6 +117,12 @@
   background: var(--parent-color, #2563eb);
   color: #fff;
   border-color: transparent;
+}
+
+.pending-actions .danger {
+  color: #dc2626;
+  border-color: #dc2626;
+  background: transparent;
 }
 
 @media (max-width: 640px) {

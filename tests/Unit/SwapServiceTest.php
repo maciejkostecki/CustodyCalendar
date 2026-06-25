@@ -146,4 +146,32 @@ class SwapServiceTest extends TestCase
         $this->expectException(NotTheReceivingParentException::class);
         $this->service->approve($request, 'mother', null);
     }
+
+    public function test_reject_sets_status_comment_and_frees_active_date(): void
+    {
+        $request = $this->service->propose('mother', Carbon::parse('2026-06-29'), null);
+
+        $rejected = $this->service->reject($request, 'father', 'not this time');
+
+        $this->assertSame(SwapRequest::STATUS_REJECTED, $rejected->status);
+        $this->assertSame('not this time', $rejected->decision_comment);
+        $this->assertNull($rejected->fresh()->active_date);
+    }
+
+    public function test_reject_rejects_non_pending(): void
+    {
+        $request = $this->service->propose('mother', Carbon::parse('2026-06-29'), null);
+        $this->service->reject($request, 'father', null);
+
+        $this->expectException(RequestNotPendingException::class);
+        $this->service->reject($request, 'father', null);
+    }
+
+    public function test_reject_rejects_when_decider_is_requester(): void
+    {
+        $request = $this->service->propose('mother', Carbon::parse('2026-06-29'), null);
+
+        $this->expectException(NotTheReceivingParentException::class);
+        $this->service->reject($request, 'mother', null);
+    }
 }

@@ -254,4 +254,62 @@ class SwapRequestControllerTest extends TestCase
         $this->withSession(['user' => self::FATHER])
             ->postJson("/swap-requests/{$req->id}/approve")->assertStatus(409);
     }
+
+    // --- reject ---
+
+    public function test_reject_requires_session(): void
+    {
+        $req = $this->makeRequest([]);
+        $this->postJson("/swap-requests/{$req->id}/reject")->assertStatus(401);
+    }
+
+    public function test_reject_forbidden_for_non_parent(): void
+    {
+        $req = $this->makeRequest([]);
+        $this->withSession(['user' => self::STRANGER])
+            ->postJson("/swap-requests/{$req->id}/reject")->assertStatus(403);
+    }
+
+    public function test_reject_missing_request_404(): void
+    {
+        $this->withSession(['user' => self::FATHER])
+            ->postJson('/swap-requests/999/reject')->assertStatus(404);
+    }
+
+    public function test_receiving_parent_can_reject_and_calendar_unchanged(): void
+    {
+        // Mother proposed for 2026-06-29 (Monday, default mother) → to father.
+        $req = $this->makeRequest(['requested_by_role' => 'mother', 'from_role' => 'mother', 'to_role' => 'father']);
+
+        $response = $this->withSession(['user' => self::FATHER])
+            ->postJson("/swap-requests/{$req->id}/reject", ['comment' => 'no']);
+
+        $response->assertStatus(200);
+        $response->assertJson(['status' => 'rejected', 'decision_comment' => 'no']);
+
+        // Dropped from the pending queue.
+        $this->assertCount(0, $this->withSession(['user' => self::FATHER])->getJson('/swap-requests')->json('requests'));
+
+        // Calendar unchanged: Monday remains mother (default), not flipped.
+        $day = collect($this->withSession(['user' => self::FATHER])->getJson('/calendar')->json('days'))
+            ->firstWhere('date', '2026-06-29');
+        $this->assertSame('mother', $day['parent']);
+        $this->assertFalse($day['pending']);
+    }
+
+    public function test_requester_cannot_reject_own_request(): void
+    {
+        $req = $this->makeRequest(['requested_by_role' => 'mother']);
+
+        $this->withSession(['user' => self::MOTHER])
+            ->postJson("/swap-requests/{$req->id}/reject")->assertStatus(403);
+    }
+
+    public function test_rejecting_already_decided_request_409(): void
+    {
+        $req = $this->makeRequest(['requested_by_role' => 'mother', 'status' => SwapRequest::STATUS_REJECTED]);
+
+        $this->withSession(['user' => self::FATHER])
+            ->postJson("/swap-requests/{$req->id}/reject")->assertStatus(409);
+    }
 }

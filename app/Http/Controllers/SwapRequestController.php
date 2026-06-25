@@ -88,6 +88,20 @@ class SwapRequestController extends Controller
 
     public function approve(Request $request, SwapRequest $swapRequest, ParentResolver $parents, SwapService $swaps)
     {
+        return $this->decide($request, $swapRequest, $parents, fn (string $role, ?string $comment) => $swaps->approve($swapRequest, $role, $comment));
+    }
+
+    public function reject(Request $request, SwapRequest $swapRequest, ParentResolver $parents, SwapService $swaps)
+    {
+        return $this->decide($request, $swapRequest, $parents, fn (string $role, ?string $comment) => $swaps->reject($swapRequest, $role, $comment));
+    }
+
+    /**
+     * Shared decision flow: session-gate, resolve the decider's role, validate
+     * the optional comment, run the transition, and map domain errors to JSON.
+     */
+    private function decide(Request $request, SwapRequest $swapRequest, ParentResolver $parents, callable $transition)
+    {
         if (! Session::has('user')) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
@@ -109,7 +123,7 @@ class SwapRequestController extends Controller
         }
 
         try {
-            $swap = $swaps->approve($swapRequest, $role, $validator->validated()['comment'] ?? null);
+            $swap = $transition($role, $validator->validated()['comment'] ?? null);
         } catch (SwapProposalException $e) {
             return response()->json(['error' => $e->getMessage()], $e->status());
         }
