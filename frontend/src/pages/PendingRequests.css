@@ -1,0 +1,84 @@
+.pending-requests {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 0.75rem;
+}
+
+.pending-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.pending-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.pending-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pending-empty {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.pending-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pending-item {
+  --parent-color: #888;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid var(--parent-color);
+  background: color-mix(in srgb, var(--parent-color) 8%, transparent);
+}
+
+.pending-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.pending-date {
+  font-weight: 600;
+}
+
+.pending-parent {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--parent-color);
+}
+
+.pending-comment {
+  margin: 0.35rem 0 0;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.pending-meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}

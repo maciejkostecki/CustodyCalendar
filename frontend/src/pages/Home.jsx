@@ -1,4 +1,5 @@
 import Calendar from './Calendar'
+import PendingRequests from './PendingRequests'
 
 function Home({ user, onLogout }) {
   return (
@@ -12,6 +13,7 @@ function Home({ user, onLogout }) {
           Log out
         </button>
       </header>
+      <PendingRequests />
       <Calendar />
     </div>
   )

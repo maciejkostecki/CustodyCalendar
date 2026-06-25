@@ -1,5 +1,12 @@
 const BASE = ''  // Vite proxy handles routing in dev
 
+export async function getIncomingSwapRequests() {
+  const res = await fetch(`${BASE}/swap-requests`, { credentials: 'include' })
+  if (!res.ok) throw new Error('Failed to load swap requests')
+  const data = await res.json()
+  return data.requests
+}
+
 export async function createSwapRequest({ date, comment }) {
   const res = await fetch(`${BASE}/swap-requests`, {
     method: 'POST',
