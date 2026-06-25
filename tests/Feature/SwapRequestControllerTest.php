@@ -136,6 +136,9 @@ class SwapRequestControllerTest extends TestCase
         $day = collect($days)->firstWhere('date', '2026-06-29');
 
         $this->assertSame('father', $day['parent']);
+        // CUS-5 req 2: the day's label/colour reflect the new custodial parent.
+        $this->assertSame('Father', $day['label']);
+        $this->assertSame('#2563eb', $day['color']);
         $this->assertFalse($day['pending']);
     }
 
