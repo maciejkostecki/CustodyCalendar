@@ -32,8 +32,9 @@ return [
     | Parents
     |--------------------------------------------------------------------------
     |
-    | Each custody role has a display label and a color used to color-code the
-    | calendar consistently per parent.
+    | Each custody role has a display label, a color used to color-code the
+    | calendar consistently per parent, and the email of the parent who holds
+    | that role (used to resolve the logged-in user's role).
     |
     */
 
@@ -41,10 +42,12 @@ return [
         'father' => [
             'label' => 'Father',
             'color' => '#2563eb', // blue-600
+            'email' => env('PARENT_FATHER_EMAIL', 'maciej.kostecki@wydajnyweb.pl'),
         ],
         'mother' => [
             'label' => 'Mother',
             'color' => '#db2777', // pink-600
+            'email' => env('PARENT_MOTHER_EMAIL', 'shastaan@gmail.com'),
         ],
     ],
 
